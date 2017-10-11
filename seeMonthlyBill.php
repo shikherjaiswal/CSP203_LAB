@@ -1,0 +1,59 @@
+<?php
+session_start();
+$servername = "localhost";
+$username = "cyborg";
+$password = "toor";
+$dbname = "lab";
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+<html>
+  <head>
+	<title>My Mess</title>
+	<link rel="stylesheet" type="text/css" href="styles/register.css">
+  </head>
+
+ <body>
+<form method="POST" action="seeMonthlyBill.php">
+  <table id="DailyMenu">
+    <tr>
+      <th>Name</th>
+      <th>Monthly Bill</th>
+    </tr>
+  <?php
+  $result = $conn->query("SELECT * FROM messRegister");
+  $i = 0;
+  while ($row = $result ->fetch_assoc()){                        
+     echo "<tr>";
+     $i++;
+     echo "<th>" . $row["name"] . "</th>" . "<th>" . $row["monthlyBill"] . "</th>";
+     echo "<th><button type=\"submit\" name=\"reset".$i."\" value=\"1\">Reset bill</button></th>";
+     echo "</tr>";
+     if(isset($_SESSION["name"])){
+        if($_SERVER["REQUEST_METHOD"] == "POST"){
+            $monthlyBillNew = 0;
+            $em = $row["email"];
+            
+            $var = "reset".$i;
+            if($_POST[$var] == 1){
+                $sql = "UPDATE messRegister SET monthlyBill='$monthlyBillNew' WHERE email='$em'";
+                 $res = $conn->query($sql);
+                header("location:seeMonthlyBill.php");
+            }
+        }
+     }
+   }
+
+  ?>
+  <a class='home' href='http://localhost:80/ZEUS/admin.php'>Home</a>
+  <a class='logout' href='http://localhost:80/ZEUS/logout.php'>Logout</a>
+  </table>
+    </form>
+ </body>
+</html>
+
+ 

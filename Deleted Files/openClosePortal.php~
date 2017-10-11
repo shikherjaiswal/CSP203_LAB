@@ -1,0 +1,107 @@
+<?php
+session_start();
+$servername = "localhost";
+$username = "cyborg";
+$password = "toor";
+$dbname = "lab";
+$link = new mysqli($servername, $username, $password, $dbname);
+if ($link->connect_error) {
+   die("Connection failed: " . $link->connect_error);
+}
+
+         $res = $link->query("SELECT * FROM messRegister");
+		
+		//$r = $link->query("SELECT portalActive FROM messRegister where email = $person")
+		    $row=$res->fetch_assoc();
+            if($row["portalActive"] == 0){
+                $print = "<label class=\"switch\">
+                   	<input type=\"checkbox\" name=\"OP\" value=\"1\">
+    	            <div class=\"slider\"></div>
+                    </label>";
+            }
+            else{
+                 $print = "Close  :  <label class=\"switch\">
+                   	<input type=\"checkbox\" name=\"OP\" value=\"1\" checked>
+    	            <div class=\"slider\"></div>
+                    </label> : Open";
+            }
+
+
+
+if($_SERVER["REQUEST_METHOD"]=="POST"){
+   $userInput = $_POST['OP'];
+	//echo $userInput;
+  // $day = $_POST['Day'];
+   //$foodTime  = $_POST['FoodTime'];
+   //$sql = "update menu set food = '$userInput' where day = '$day' AND time='$foodTime'";
+   //$foodresult = $link->query($sql);
+   //if($foodresult->num_rows>0){
+   //  while($row=$foodresult->fetch_assoc()){
+    //  $print2 = $print2."<th>".$row['food']."</th>";
+   //  }
+   //  $print2 = $print2."</tr></table>";
+  // }
+
+        
+   
+ 
+  if($userInput == 0){
+     
+     $res = $link->query("SELECT * FROM messRegister");
+		
+		//$r = $link->query("SELECT portalActive FROM messRegister where email = $person")
+		while($row=$res->fetch_assoc()){
+                  //echo "$p";
+		  $em = $row['email'];
+                  $r = 0;
+		  $link->query("update messRegister SET portalActive='$r' where email = '$em'");
+                  }
+                
+		$_SESSION['message'] = "Portal Closed";
+		$aName = $_SESSION['name'];
+    $res2 = $link->query("SELECT * from adminTable where adminName='$aName'");
+        while($row2 = $res2->fetch_assoc()){
+            $link->query("update adminTable SET isPortalClosedToday=1 where adminName = '$aName'");
+        }
+    
+    
+    }
+		//if($bArr == 1){$m = $m+30;}
+		//if($dArr == 1){$m = $m+30;}
+		//if($lArr == 1){$m = $m+30;}    
+   else{
+      $res = $link->query("SELECT * FROM messRegister");
+		
+		//$r = $link->query("SELECT portalActive FROM messRegister where email = $person")
+		while($row=$res->fetch_assoc()){
+                  $r = 1;
+ 		  $em = $row['email'];
+		  $link->query("update messRegister SET portalActive='$r' where email = '$em'");
+                  }
+		$_SESSION['message'] = "Portal Opened";
+
+        }
+
+   header("location: admin.php");
+  }
+ //header("location: admin.html");
+
+?>
+
+<html>
+<head>
+ 	<title>My Mess</title>
+ 	<link rel = "stylesheet" type="text/css" href="styles/register.css">
+</head>
+<body>
+<form action = "openClosePortal.php" method = "POST">
+<?php echo $print;?>
+ <br>
+ <input type="submit" value="Submit">
+ 
+ <a class='logout' href='http://localhost:80/ZEUS/home.html'>Logout</a>
+   <a class='home' href='http://localhost:80/ZEUS/admin.php'>Home</a>
+ </form>
+ </body>
+ </html>
+ 

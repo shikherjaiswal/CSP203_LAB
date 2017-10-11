@@ -1,0 +1,70 @@
+<?php
+session_start();
+if(isset($_SESSION['username'])){
+$servername = "localhost";
+$username = "cyborg";
+$password = "toor";
+$dbname = "lab";
+
+
+// Create connection
+$link = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($link->connect_error) {
+   die("Connection failed: " . $link->connect_error);
+}
+	$email=$_SESSION['email'];
+	//$email = '2015csb1116@iitrpr.ac.in';
+	$to=$email;
+	$subject="Verification OTP";
+	$randomNum = mt_rand(100000,999999);
+	//echo $randomNum;
+	$_SESSION["OTP"] = (string)$randomNum;
+	$msg = '
+	
+	Thanks for signing up!<br>
+	----------------------------<br>
+	Login ID: '.$_SESSION["email"].'<br>
+	Password: What You Entered.<br> 
+	----------------------------<br><br>
+    <br>
+	Your OTP is : '.$randomNum.'<br>';
+    require_once('phpmailer/PHPMailerAutoload.php');
+    $mail = new PHPMailer();
+    $mail->IsSMTP();
+    $mail->CharSet = 'UTF-8';
+    $mail->Host = "smtp.gmail.com";
+    $mail->SMTPAuth= true;
+    $mail->Port = 465; // Or 587
+    $mail->Username= 'guesthousemess@gmail.com';
+    $mail->Password= 'csp203lab';
+    $mail->SMTPSecure = 'ssl';
+    $mail->From = $to;
+    $mail->FromName= 'Your Guest House';
+    $mail->isHTML(true);
+    $mail->Subject = $subject;
+    $mail->Body = $msg;
+    $mail->addAddress($to);
+    $mail->Host = "ssl://smtp.gmail.com"; 
+    //echo !extension_loaded('openssl')?"Not Available":"Available";
+    if(!$mail->send()){
+     echo "Mailer Error: " . $mail->ErrorInfo;
+    }else{
+     //echo "E-Mail has been sent<br>";
+     $user = $_SESSION["username"];
+     $email = $_SESSION["email"];
+     $pass = $_SESSION["password"];
+     
+     $_SESSION["username"] = $user;
+     $_SESSION["email"] = $email;
+     $_SESSION["password"] = $pass;
+     header("location:verify.php");
+    }
+   
+	$link->close();
+
+} else {
+	echo "<br>Session Expired, Login Again.";
+}
+?>
+

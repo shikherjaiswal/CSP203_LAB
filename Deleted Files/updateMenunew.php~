@@ -1,0 +1,75 @@
+#!/usr/bin/php
+<?php
+session_start();
+$servername = "localhost";
+$username = "cyborg";
+$password = "toor";
+$dbname = "lab";
+
+// Create connection
+$link = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($link->connect_error) {
+    die("Connection failed: " . $link->connect_error);
+}
+
+if($_SERVER["REQUEST_METHOD"]== "POST"){
+	$userInput = $_POST['umenu'];
+	//$sql = "SELECT food FROM menu WHERE time='Breakfast' and day='$day'";
+	
+	// echo "$_POST['Day']     $_POST['FoodTime']";
+     $day = $_POST['Day'];
+	 $foodTime = $_POST['FoodTime'];
+	 
+	 $sql = "update menu set $foodTime = $_POST['umenu'] WHERE day = $day";
+	     $foodresult=$link->query($sql);
+	     if($foodresult->num_rows>0){
+	     while($row=$foodresult->fetch_assoc()){
+	     $print2=$print2. "<th>".$row['food']."</th>";
+	     }
+         $print2=$print2. "</tr></table>";
+         }
+?>
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My Mess</title>
+	<link rel="stylesheet" type="text/css" href="styles/register.css">
+</head>
+<body>
+
+<input list ="day" name ="Day">
+<datalist id ="day">
+  <option value="monday">Monday</option>
+  <option value="tuesday">Tuesday</option>
+  <option value="wednesday">Wednesday</option>
+  <option value="thrusday">Thrusday</option>
+  <option value="friday">Friday</option>
+  <option value="saturday">Saturday</option>
+  <option value="sunday">Sunday</option>
+ </datalist>
+
+<input list = "foodTime" name ="FoodTime">
+<datalist id ="foodTime">
+
+  <option value="breakfast">Breakfast</option>
+  <option value="lunch">Lunch</option>
+  <option value="dinner">Dinner</option>
+  </datalist>
+
+     <form action="/action_page.php">
+  Update menu: <input type="text" name="umenu"><br>
+  <input type="submit" value="Submit">
+   <?php
+ $sel = $_POST['Day'];
+ $se = $_POST['FoodTime'];
+ echo "selected" .$sel;
+ echo "selected" .$se;
+ ?>
+  </form>
+</body>
+</html>
