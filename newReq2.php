@@ -20,7 +20,7 @@ if ($conn->connect_error) {
   </head>
 
  <body>
-<form method="POST" action="newRequests.php">
+<form method="POST" action="newReq2.php">
   <table id="DailyMenu">
   <?php
   $result = $conn->query("SELECT * FROM newRequests");
@@ -46,7 +46,7 @@ if ($conn->connect_error) {
             if($_POST[$var1] == 1){
                 $sql = "DELETE FROM newRequests WHERE email='$em'";
                 $res = $conn->query($sql);
-                header("location:newRequests.php");
+                header("location:newReq2.php");
             }
             if($_POST[$var2] == 1){
 
@@ -60,7 +60,7 @@ if ($conn->connect_error) {
         
                 $sql = "DELETE FROM newRequests WHERE email='$em'";
                 $res = $conn->query($sql);
-                header("location:newRequests.php");
+                header("location:newReq2.php");
 
             }
         }
